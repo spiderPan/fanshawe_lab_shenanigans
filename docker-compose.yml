@@ -1,0 +1,37 @@
+version: "3.3"
+
+services:
+  php:
+    build: ./.docker/php
+    restart: always
+    ports:
+      - 8888:80
+    volumes:
+      - ./html:/var/www/html
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 8889:3306
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test_u
+      MYSQL_PASSWORD: test_p
+      MYSQL_DATABASE: db_test
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8123:80
+    environment:
+      PMA_HOSTS: mysql
+      PMA_USER: test_u
+      PMA_PASSWORD: test_p
+
+volumes:
+  db_data: {}
